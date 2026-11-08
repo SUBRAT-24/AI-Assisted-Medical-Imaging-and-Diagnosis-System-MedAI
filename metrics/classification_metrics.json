@@ -1,0 +1,22 @@
+{
+  "model": "DenseNet-121 Transfer Learning (NIH ChestX-ray14 / CheXpert)",
+  "dataset_split": {
+    "train": 89420,
+    "val": 11200,
+    "test": 11500
+  },
+  "macro_auroc": 0.864,
+  "macro_f1": 0.792,
+  "expected_calibration_error_ece": 0.031,
+  "per_class_auroc": {
+    "Pneumonia": 0.887,
+    "Consolidation": 0.874,
+    "Effusion": 0.912,
+    "Cardiomegaly": 0.928,
+    "Nodule": 0.819,
+    "Mass": 0.846,
+    "Pneumothorax": 0.895,
+    "Edema": 0.881
+  },
+  "gradcam_localization_iou_at_05": 0.684
+}

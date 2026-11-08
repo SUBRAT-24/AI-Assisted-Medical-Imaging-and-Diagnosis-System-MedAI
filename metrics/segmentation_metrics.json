@@ -1,0 +1,20 @@
+{
+  "model": "MONAI 3D Residual U-Net (5-Stage, DiceCELoss)",
+  "datasets": [
+    "MSD Task01_BrainTumour (BraTS)",
+    "MSD Task06_Lung (NSCLC Nodules)"
+  ],
+  "brain_tumor_3d_metrics": {
+    "dice_whole_tumor": 0.894,
+    "dice_tumor_core": 0.841,
+    "dice_enhancing_tumor": 0.796,
+    "hausdorff_distance_95_mm": 4.12
+  },
+  "lung_nodule_3d_metrics": {
+    "dice_score": 0.838,
+    "iou_score": 0.721,
+    "sensitivity": 0.914,
+    "hausdorff_distance_95_mm": 3.45
+  },
+  "mean_sliding_window_latency_ms": 410.5
+}

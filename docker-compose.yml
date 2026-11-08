@@ -1,0 +1,57 @@
+version: "3.9"
+
+services:
+  orthanc-pacs:
+    image: jodogne/orthanc-plugins:1.12.4
+    container_name: aiml02-orthanc-dicom-server
+    ports:
+      - "4242:4242"   # DICOM C-STORE / C-FIND / C-MOVE port
+      - "8042:8042"   # Orthanc REST API & Web Explorer port
+    volumes:
+      - ./configs/orthanc/orthanc.json:/etc/orthanc/orthanc.json:ro
+      - orthanc_storage:/var/lib/orthanc/db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8042/system"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  ai-inference-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: aiml02-ai-inference-service
+    ports:
+      - "8000:8000"
+    environment:
+      - ORTHANC_URL=http://orthanc-pacs:8042
+      - POLL_INTERVAL_SECONDS=5
+      - DATABASE_URL=sqlite:///./data/audit_log.db
+      - MODEL_DEVICE=cpu
+      - CLINICAL_DISCLAIMER=FOR_EDUCATION_ONLY_NOT_CLINICAL_USE
+    volumes:
+      - ./backend:/app
+      - ai_audit_data:/app/data
+    depends_on:
+      orthanc-pacs:
+        condition: service_healthy
+    restart: unless-stopped
+
+  react-radiology-viewer:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: aiml02-react-viewer
+    ports:
+      - "3000:80"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000/api/v1
+      - VITE_ORTHANC_URL=http://localhost:8042
+    depends_on:
+      - ai-inference-backend
+    restart: unless-stopped
+
+volumes:
+  orthanc_storage:
+  ai_audit_data:

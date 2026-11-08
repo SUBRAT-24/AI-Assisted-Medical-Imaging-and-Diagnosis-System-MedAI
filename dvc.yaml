@@ -1,0 +1,36 @@
+stages:
+  preprocess_dicom:
+    cmd: python backend/preprocess.py --config params.yaml --output data/processed
+    deps:
+      - backend/preprocess.py
+      - backend/dicom_utils.py
+    params:
+      - preprocess
+    outs:
+      - data/processed
+
+  train_classifier:
+    cmd: python backend/models/classifier.py --mode train --config params.yaml
+    deps:
+      - backend/models/classifier.py
+      - data/processed
+    params:
+      - classification
+    outs:
+      - backend/models/checkpoints/densenet121_chexpert.pt
+    metrics:
+      - metrics/classification_metrics.json:
+          cache: false
+
+  train_segmenter:
+    cmd: python backend/models/segmenter.py --mode train --config params.yaml
+    deps:
+      - backend/models/segmenter.py
+      - data/processed
+    params:
+      - segmentation
+    outs:
+      - backend/models/checkpoints/monai_3d_unet_msd.pt
+    metrics:
+      - metrics/segmentation_metrics.json:
+          cache: false

@@ -1,0 +1,17 @@
+{
+  "Name": "AIML02-Orthanc-PACS",
+  "StorageDirectory": "/var/lib/orthanc/db",
+  "IndexDirectory": "/var/lib/orthanc/db",
+  "HttpPort": 8042,
+  "DicomPort": 4242,
+  "DicomAet": "ORTHANC_AI",
+  "DicomCheckCalledAet": false,
+  "RemoteAccessAllowed": true,
+  "AuthenticationEnabled": false,
+  "RegisteredUsers": {
+    "orthanc": "orthanc"
+  },
+  "Plugins": [
+    "/usr/share/orthanc/plugins"
+  ]
+}
